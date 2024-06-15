@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "terminal_app",
+    "game_of_life_logic"
+]

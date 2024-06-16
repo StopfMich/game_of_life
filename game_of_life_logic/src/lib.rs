@@ -1,3 +1,5 @@
+use rand::prelude::*;
+
 #[derive(Clone)]
 pub struct GameOfLife {
     pub board: Vec<Vec<bool>>,
@@ -16,6 +18,17 @@ pub fn update_game(board: GameOfLife) -> GameOfLife {
 
 pub fn create_custom_board(board: Vec<Vec<bool>>, size: usize) -> GameOfLife {
     GameOfLife { board, size: size.try_into().unwrap() }
+}
+
+pub fn create_random_board(size: usize) -> GameOfLife {
+    let mut board = vec![vec![false; size]; size];
+    let mut rng = rand::thread_rng();
+    for i in 0..size {
+        for j in 0..size {
+            board[i][j] = rng.gen_bool(0.5);
+        }
+    }
+    return GameOfLife { board, size }
 }
 
 pub fn insert_cell(game_of_life: GameOfLife, x: usize, y: usize) -> GameOfLife {
@@ -71,4 +84,27 @@ pub fn update_board(old_game_of_life: GameOfLife) -> GameOfLife {
         }
     }
     return create_custom_board(new_board, size);
+}
+
+// Function to check if the game is in a loop (up to 4 generations) or stable state
+pub fn check_game_end(current_game: GameOfLife, last_games: Vec<GameOfLife>, current_generation: usize, max_generation: usize) -> bool {
+
+    // delete all games except the last 4
+    let mut last_four_games = last_games.clone();
+    while last_four_games.len() > 4 {
+        last_four_games.remove(0);
+    }
+
+    // max generation reached?
+    if current_generation >= max_generation {
+        return true;
+    }
+
+    // check if the game is in a loop
+    for game in last_games.iter() {
+        if game.board == current_game.board {
+            return true;
+        }
+    }
+    return false;
 }

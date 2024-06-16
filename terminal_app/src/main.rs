@@ -28,7 +28,7 @@ fn main() -> ExitCode {
         game_loop(game, sleep_time_in_millis, max_generation);
         clear();
         println!("Do you want to play again? (y/n)");
-        let mut input;
+        let input: String;
         scan!("{}", input);
         if input != "y" {
             break;
@@ -43,7 +43,7 @@ fn main_menu() {
     println!("In your terminal!");
     //wait for user input
     println!("Press enter to start the game");
-    let mut garbage;
+    let garbage: String;
     scan!("{}", garbage);
 }
 
@@ -95,14 +95,14 @@ fn select_max_generation() -> usize {
 fn select_board() -> bool {
     tu::print_headline("Select board");
     println!("Do you want to create a custom board? (y/n)");
-    let mut input;
+    let input: String;
     scan!("{}", input);
     return input == "y";
 }
 
 fn game_loop(game: gol::GameOfLife, sleep_time_in_millis: usize, max_generation: usize) {
-    let end = false;
-    let last_games: Vec;
+    let mut end = false;
+    let last_games: Vec<gol::GameOfLife>;
     let current_generation = 0;
     while !end {
         let grid_string = tu::get_grid_string(game);
@@ -110,7 +110,7 @@ fn game_loop(game: gol::GameOfLife, sleep_time_in_millis: usize, max_generation:
         std::thread::sleep(std::time::Duration::from_millis(sleep_time_in_millis as u64));
         last_games.push(game);
         let updated_game = gol::update_board(game);
-        end = gol::check_game_end(updated_game, vec![last_games], current_generation, max_generation);
+        end = gol::check_game_end(updated_game, last_games, current_generation, max_generation);
         clear();
     }
 
@@ -120,6 +120,6 @@ fn game_loop(game: gol::GameOfLife, sleep_time_in_millis: usize, max_generation:
     let grid_string = tu::get_grid_string(game);
     println!("{}", grid_string);
     println!("Press enter to return to continue.");
-    let mut garbage;
+    let garbage: String;
     scan!("{}", garbage);
 }

@@ -4,6 +4,7 @@ mod tests {
     use super::*;
     use game_of_life_logic::*;
 
+
     //Tests for the game_of_life_logic module
     #[test]
     fn test_update_game() {
@@ -12,10 +13,11 @@ mod tests {
             vec![false, true, false],
             vec![true, false, true],
         ];
-        let game = create_custom_board(board.clone(), 3);
-        let updated_game = update_game(game);
+        let mut game = create_game(1);
+        game = game.use_custom_board(board.clone(), 3);
+        game = game.update_game();
     
-        assert_eq!(updated_game.board, vec![
+        assert_eq!(game.board, vec![
             vec![false, false, false],
             vec![false, false, false],
             vec![false, false, false],
@@ -30,13 +32,14 @@ mod tests {
             vec![false, false, false],
             vec![false, false, false],
         ];
-        let game = create_custom_board(board.clone(), 3);
+        let mut game = create_game(1);
+        game = game.use_custom_board(board.clone(), 3);
 
         // Insert a cell at position (1, 1)
-        let updated_game = insert_cell(game, 1, 1);
+        game = game.insert_cell(1, 1);
 
         // Assert that the updated game has the correct board
-        assert_eq!(updated_game.board, vec![
+        assert_eq!(game.board, vec![
             vec![false, false, false],
             vec![false, true, false],
             vec![false, false, false],
@@ -53,13 +56,14 @@ mod tests {
             vec![false, false, false, false, false],
             vec![false, false, false, false, false],
         ];
-        let game = create_custom_board(board.clone(), 5);
+        let mut game = create_game(1);
+        game = game.use_custom_board(board.clone(), 5);
 
         // Update the game
-        let updated_game = update_game(game);
+        game = game.update_game();
 
         // Assert that the updated game has the correct board
-        assert_eq!(updated_game.board, vec![
+        assert_eq!(game.board, vec![
             vec![false, false, false, false, false],
             vec![false, false, true, false, false],
             vec![false, false, true, false, false],

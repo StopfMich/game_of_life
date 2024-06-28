@@ -9,24 +9,24 @@ use terminal_utils as tu;
 fn main() -> ExitCode {
     loop {
         main_menu();
-        clear();
+        let _ = clear();
         let size = select_size();
-        clear();
+        let _ = clear();
         let sleep_time_in_millis = select_sleep_time();
-        clear();
+        let _ = clear();
         let max_generation = select_max_generation();
         let use_custom_board = select_board();
-        clear();
-        let game;
+        let _ = clear();
+        let mut game = gol::create_game(1); //placeholder
         if use_custom_board {
             let board_from_user = tu::user_creates_custom_board(size);
-            game = gol::create_custom_board(board_from_user, size);
-            clear();
+            game = game.use_custom_board(board_from_user, size);
+            let _ = clear();
         } else {
-            game = gol::create_random_board(size);
+            game = game.use_random_board(size);
         }
         game_loop(game, sleep_time_in_millis, max_generation);
-        clear();
+        let _ = clear();
         println!("Do you want to play again? (y/n)");
         let input: String;
         scan!("{}", input);
@@ -100,18 +100,16 @@ fn select_board() -> bool {
     return input == "y";
 }
 
-fn game_loop(game: gol::GameOfLife, sleep_time_in_millis: usize, max_generation: usize) {
+fn game_loop(mut game: gol::GameOfLife, sleep_time_in_millis: usize, max_generation: usize) {
     let mut end = false;
-    let last_games: Vec<gol::GameOfLife>;
     let current_generation = 0;
     while !end {
-        let grid_string = tu::get_grid_string(game);
+        let grid_string = tu::get_grid_string(game.clone()); //@todo: fix
         println!("{}", grid_string);
         std::thread::sleep(std::time::Duration::from_millis(sleep_time_in_millis as u64));
-        last_games.push(game);
-        let updated_game = gol::update_board(game);
-        end = gol::check_game_end(updated_game, last_games, current_generation, max_generation);
-        clear();
+        game = game.update_game();
+        end = game.clone().check_stuck(current_generation, max_generation);
+        let _ = clear();
     }
 
     tu::print_headline("Game over!");

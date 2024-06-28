@@ -25,6 +25,7 @@ impl GameOfLife {
             }
         }
         self.board = new_board;
+        self.game_history.push(self.clone());
         return self;
     }
 
@@ -34,7 +35,7 @@ impl GameOfLife {
         return self;
     }
 
-    fn use_random_board(mut self,size: usize) -> GameOfLife {
+    pub fn use_random_board(mut self,size: usize) -> GameOfLife {
         let mut board = vec![vec![false; size]; size];
         let mut rng = rand::thread_rng();
         for i in 0..size {
@@ -94,7 +95,7 @@ impl GameOfLife {
         }
     }
 
-    fn check_stuck(mut self, current_generation: usize, max_generation: usize) -> bool {
+    pub fn check_stuck(mut self, current_generation: usize, max_generation: usize) -> bool {
         // delete all games except the last 4
         while self.game_history.len() > 4 {
             self.game_history.remove(0);

@@ -1,29 +1,21 @@
 use text_io::scan;
-use term_grid::{Grid, GridOptions, Direction, Filling, Cell};
 use text_to_ascii_art::convert;
 use game_of_life_logic as gol;
 
-// Function to print the board in the terminal
-pub fn get_grid_string(game: gol::GameOfLife) -> String{
-    let board = game.board.clone();
-    let size = game.size;
-    let mut grid = Grid::new(GridOptions {
-        filling: Filling::Spaces(1),
-        direction: Direction::LeftToRight,
-    });
-
-    for i in 0..size {
-        for j in 0..size {
-            if board[i][j] {
-                grid.add(Cell::from("X"));
+// Function to print the board in the terminal, don't Grid library
+pub fn get_grid_string(game: gol::GameOfLife) -> String {
+    let mut result = String::new();
+    for row in game.board.iter() {
+        for &cell in row.iter() {
+            if cell {
+                result.push('X');
             } else {
-                grid.add(Cell::from(" "));
+                result.push(' ');
             }
         }
-        // Adds an empty cell to start a new row
-        grid.add(Cell::from(""));
+        result.push('\n');
     }
-    return grid.fit_into_width(50).unwrap().to_string();
+    result
 }
 
 // Function to print a headline as ASCII art with text_to_ascii_art

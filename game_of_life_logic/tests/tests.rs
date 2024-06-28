@@ -14,8 +14,8 @@ mod tests {
             vec![true, false, true],
         ];
         let mut game = create_game(1);
-        game = game.use_custom_board(board.clone(), 3);
-        game = game.update_game();
+        game.use_custom_board(board.clone(), 3);
+        game.update_game();
     
         assert_eq!(game.board, vec![
             vec![false, false, false],
@@ -33,10 +33,10 @@ mod tests {
             vec![false, false, false],
         ];
         let mut game = create_game(1);
-        game = game.use_custom_board(board.clone(), 3);
+        game.use_custom_board(board.clone(), 3);
 
         // Insert a cell at position (1, 1)
-        game = game.insert_cell(1, 1);
+        game.insert_cell(1, 1);
 
         // Assert that the updated game has the correct board
         assert_eq!(game.board, vec![
@@ -57,10 +57,10 @@ mod tests {
             vec![false, false, false, false, false],
         ];
         let mut game = create_game(1);
-        game = game.use_custom_board(board.clone(), 5);
+        game.use_custom_board(board.clone(), 5);
 
         // Update the game
-        game = game.update_game();
+        game.update_game();
 
         // Assert that the updated game has the correct board
         assert_eq!(game.board, vec![

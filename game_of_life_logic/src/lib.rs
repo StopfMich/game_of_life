@@ -39,13 +39,12 @@ impl GameOfLife {
             }
         }
 
-    pub fn use_custom_board(mut self, board: Vec<Vec<bool>>, size: usize) -> GameOfLife {
+    pub fn use_custom_board(&mut self, board: Vec<Vec<bool>>, size: usize) {
         self.board = board;
         self.size = size.try_into().unwrap();
-        return self;
     }
 
-    pub fn use_random_board(mut self,size: usize) -> GameOfLife {
+    pub fn use_random_board(&mut self,size: usize) {
         let mut board = vec![vec![false; size]; size];
         let mut rng = rand::thread_rng();
         for i in 0..size {
@@ -55,17 +54,14 @@ impl GameOfLife {
         }
         self.board = board;
         self.size = size;
-        return self;
     }
 
-    pub fn insert_cell(mut self, x: usize, y: usize) -> GameOfLife {
+    pub fn insert_cell(&mut self, x: usize, y: usize) {
         self.board[x][y] = true;
-        return self;
     }
 
-    pub fn remove_cell(mut self, x: usize, y: usize) -> GameOfLife {
+    pub fn remove_cell(&mut self, x: usize, y: usize) {
         self.board[x][y] = false;
-        return self;
     }
 
     fn check_cell(&self, x: usize, y: usize) -> bool {

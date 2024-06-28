@@ -17,13 +17,13 @@ fn main() -> ExitCode {
         let max_generation = select_max_generation();
         let use_custom_board = select_board();
         let _ = clear();
-        let mut game = gol::create_game(1); //placeholder
+        let mut game = gol::create_game(1);
         if use_custom_board {
             let board_from_user = tu::user_creates_custom_board(size);
-            game = game.use_custom_board(board_from_user, size);
+            game.use_custom_board(board_from_user, size);
             let _ = clear();
         } else {
-            game = game.use_random_board(size);
+            game.use_random_board(size);
         }
         game_loop(game, sleep_time_in_millis, max_generation);
         let _ = clear();

@@ -51,9 +51,9 @@ fn select_size() -> usize {
     tu::print_headline("Select board size");
     let mut size;
     loop {
-        println!("Please enter the size of the board (2-50): ");
+        println!("Please enter the size of the board (2-500): ");
         scan!("{}", size);
-        if size > 1 && size <= 50 {
+        if size > 1 && size <= 500 {
             break;
         } else {
             println!("Please enter a value between 2 and 50.");
@@ -102,12 +102,13 @@ fn select_board() -> bool {
 
 fn game_loop(mut game: gol::GameOfLife, sleep_time_in_millis: usize, max_generation: usize) {
     let mut end = false;
-    let current_generation = 0;
+    let mut current_generation = 0;
     while !end {
-        let grid_string = tu::get_grid_string(game.clone()); //@todo: fix
+        let grid_string = tu::get_grid_string(game.clone());
         println!("{}", grid_string);
         std::thread::sleep(std::time::Duration::from_millis(sleep_time_in_millis as u64));
-        game = game.update_game();
+        game.update_game();
+        current_generation += 1;
         end = game.clone().check_stuck(current_generation, max_generation);
         let _ = clear();
     }

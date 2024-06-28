@@ -2,15 +2,15 @@ use text_io::scan;
 use text_to_ascii_art::convert;
 use game_of_life_logic as gol;
 
-// Function to print the board in the terminal, don't Grid library
+// Function to print the board in the terminal, using the Grid library
 pub fn get_grid_string(game: gol::GameOfLife) -> String {
     let mut result = String::new();
     for row in game.board.iter() {
         for &cell in row.iter() {
             if cell {
-                result.push('X');
+                result.push('🟩');
             } else {
-                result.push(' ');
+                result.push('⬜');
             }
         }
         result.push('\n');

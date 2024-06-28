@@ -1,33 +1,43 @@
 use rand::prelude::*;
+use std::collections::VecDeque;
+
 
 #[derive(Clone)]
 pub struct GameOfLife {
     pub board: Vec<Vec<bool>>,
     pub size: usize,
-    pub game_history: Vec<GameOfLife>
+    pub game_history: VecDeque<u64>
 }
 
 pub fn create_game(size: usize) -> GameOfLife {
     let board = vec![vec![false; size]; size];
-    let game_history = Vec::new();
+    let game_history = VecDeque::new();
     GameOfLife { board, size, game_history }
 }
 
 impl GameOfLife {
 
-    pub fn update_game(mut self) -> GameOfLife {
-        //let new_game_of_life = update_board(board);
+    pub fn update_game(&mut self) {
         let size = self.size;
-        let mut new_board = vec![vec![false; size]; size]; //empty board
+        let mut new_board = vec![vec![false; size]; size];
         for i in 0..size {
             for j in 0..size {
-                new_board[i][j] = self.clone().check_cell(i, j);
+                new_board[i][j] = self.check_cell(i, j); // Direkter Zugriff, kein Klonen
             }
         }
         self.board = new_board;
-        self.game_history.push(self.clone());
-        return self;
+        // Fügen Sie hier die Logik hinzu, um den Zustand in der Historie zu speichern, ohne das gesamte Spiel zu klonen
+        self.manage_history();
     }
+
+        // Beispiel für eine optimierte Historienverwaltung
+        fn manage_history(&mut self) {
+            let state_hash = self.hash_state();
+            self.game_history.push_front(state_hash);
+            while self.game_history.len() > 4 {
+                self.game_history.pop_back();
+            }
+        }
 
     pub fn use_custom_board(mut self, board: Vec<Vec<bool>>, size: usize) -> GameOfLife {
         self.board = board;
@@ -58,7 +68,7 @@ impl GameOfLife {
         return self;
     }
 
-    fn check_cell(self, x: usize, y: usize) -> bool {
+    fn check_cell(&self, x: usize, y: usize) -> bool {
         let mut count = 0;
         let size = self.size as usize;
         let x = x as usize;
@@ -95,23 +105,33 @@ impl GameOfLife {
         }
     }
 
-    pub fn check_stuck(mut self, current_generation: usize, max_generation: usize) -> bool {
-        // delete all games except the last 4
-        while self.game_history.len() > 4 {
-            self.game_history.remove(0);
-        }
-
+    pub fn check_stuck(self, current_generation: usize, max_generation: usize) -> bool {
         // max generation reached?
         if current_generation >= max_generation {
             return true;
         }
 
         // check if the game is in a loop
-        for game in self.game_history.iter() {
-            if game.board == self.board {
+        for i in 1..self.game_history.len() {
+            if self.game_history[i] == self.game_history[0] {
                 return true;
             }
         }
+
         return false;
+    }
+
+    fn hash_state(&self) -> u64 {
+        const FNV_PRIME: u64 = 1099511628211;
+        const FNV_OFFSET_BASIS: u64 = 14695981039346656037;
+    
+        let mut hash = FNV_OFFSET_BASIS;
+        for row in self.board.iter() {
+            for &cell in row.iter() {
+                hash ^= cell as u64;
+                hash = hash.wrapping_mul(FNV_PRIME);
+            }
+        }
+        return hash
     }
 }
